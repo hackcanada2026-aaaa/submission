@@ -53,9 +53,9 @@ export function useVideoCapture() {
 
     mr.start();
     setRecording(true);
-    setCountdown(5);
+    setCountdown(8);
 
-    let count = 5;
+    let count = 8;
     timerRef.current = setInterval(() => {
       count--;
       setCountdown(count);

@@ -82,7 +82,10 @@ export default function Capture() {
           )}
         </motion.button>
         <p className="text-sm text-[var(--text-secondary)]">
-          {recording ? 'Recording... tap to stop' : 'Tap to record (5s)'}
+          {recording ? 'Recording... tap to stop' : 'Tap to record (8s for vitals)'}
+        </p>
+        <p className="text-xs text-[var(--text-secondary)] opacity-80 max-w-[260px] text-center">
+          Keep the person&apos;s face clearly in frame for heart & breathing rate.
         </p>
         <div className="w-full border-t border-[var(--border)] pt-4 mt-2">
           <button
