@@ -8,7 +8,7 @@ function buildPlainText(triageData, cloudinaryData, checkedSteps, chatMessages) 
     'PULSELINK EMERGENCY REPORT',
     `Generated: ${new Date().toLocaleString()}`,
     '',
-    `TRIAGE: ${t.diagnosis?.triage_category} — Severity ${t.diagnosis?.severity_score}/10`,
+    `TRIAGE: ${t.diagnosis?.triage_category} — Severity ${Math.min(10, Math.max(1, Math.round(Number(t.diagnosis?.severity_score)) || 5))}/10`,
     `SUMMARY: ${t.summary}`,
     '',
     'VITALS:',
@@ -52,6 +52,7 @@ export default function IncidentReport({ open, onClose, chatMessages }) {
   if (!triageData) return null;
 
   const t = triageData;
+  const severityOutOf10 = Math.min(10, Math.max(1, Math.round(Number(t.diagnosis?.severity_score)) || 5));
 
   const handlePrint = () => window.print();
   const handleCopy = () => {
@@ -93,7 +94,7 @@ export default function IncidentReport({ open, onClose, chatMessages }) {
               <div className="space-y-6">
                 <section>
                   <h2 className="text-lg font-semibold border-b pb-1 mb-2">Triage Assessment</h2>
-                  <p className="font-medium">{t.diagnosis?.triage_category} — Severity {t.diagnosis?.severity_score}/10</p>
+                  <p className="font-medium">{t.diagnosis?.triage_category} — Severity {severityOutOf10}/10</p>
                   <p className="text-sm text-gray-600 mt-1">{t.summary}</p>
                 </section>
 
