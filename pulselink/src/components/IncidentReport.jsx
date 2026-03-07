@@ -5,7 +5,7 @@ import { useTriage } from '../context/TriageContext';
 function buildPlainText(triageData, cloudinaryData, checkedSteps, chatMessages) {
   const t = triageData;
   const lines = [
-    'PULSELINK EMERGENCY REPORT',
+    'BYSTANDER EMERGENCY REPORT',
     `Generated: ${new Date().toLocaleString()}`,
     '',
     `TRIAGE: ${t.diagnosis?.triage_category} — Severity ${Math.min(10, Math.max(1, Math.round(Number(t.diagnosis?.severity_score)) || 5))}/10`,
@@ -88,7 +88,7 @@ export default function IncidentReport({ open, onClose, chatMessages }) {
                 </button>
               </div>
 
-              <h1 className="text-2xl font-bold mb-1">PulseLink Emergency Report</h1>
+              <h1 className="text-2xl font-bold mb-1">Bystander Emergency Report</h1>
               <p className="text-sm text-gray-500 mb-6">{new Date().toLocaleString()}</p>
 
               <div className="space-y-6">

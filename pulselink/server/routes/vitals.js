@@ -7,7 +7,7 @@ const os = require('os');
 
 const PRESAGE_BINARY = path.join(__dirname, '..', 'presage', 'build', 'presage_spot');
 const PRESAGE_API_KEY = process.env.PRESAGE_API_KEY;
-const DOCKER_IMAGE = 'pulselink-presage';
+const DOCKER_IMAGE = 'bystander-presage';
 
 /** Request MP4 from Cloudinary so Presage gets a format it can decode (browser records WebM). */
 function presageVideoUrl(url) {
