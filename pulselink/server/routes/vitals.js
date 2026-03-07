@@ -7,6 +7,7 @@ const os = require('os');
 
 const PRESAGE_BINARY = path.join(__dirname, '..', 'presage', 'build', 'presage_spot');
 const PRESAGE_API_KEY = process.env.PRESAGE_API_KEY;
+const DOCKER_IMAGE = 'pulselink-presage';
 
 const downloadVideo = (url) => {
   return new Promise((resolve, reject) => {
@@ -25,25 +26,12 @@ const downloadVideo = (url) => {
   });
 };
 
-const getVitals = (videoUrl) => {
-  return new Promise(async (resolve, reject) => {
-    let tmpFile;
-    try {
-      tmpFile = await downloadVideo(videoUrl);
-    } catch (err) {
-      return reject(new Error(`Failed to download video: ${err.message}`));
-    }
-
-    execFile(PRESAGE_BINARY, [PRESAGE_API_KEY, tmpFile], { timeout: 60000 }, (error, stdout, stderr) => {
-      fs.unlink(tmpFile, () => {});
-
-      if (error) {
-        return reject(new Error(`Presage binary failed: ${error.message}\nstderr: ${stderr}`));
-      }
-
+const getVitalsNative = (videoPath) => {
+  return new Promise((resolve, reject) => {
+    execFile(PRESAGE_BINARY, [PRESAGE_API_KEY, videoPath], { timeout: 60000 }, (error, stdout, stderr) => {
+      if (error) return reject(new Error(`Presage binary failed: ${error.message}\nstderr: ${stderr}`));
       try {
-        const metrics = JSON.parse(stdout.trim());
-        resolve(metrics);
+        resolve(JSON.parse(stdout.trim()));
       } catch (parseErr) {
         reject(new Error(`Failed to parse Presage output: ${stdout}`));
       }
@@ -51,21 +39,45 @@ const getVitals = (videoUrl) => {
   });
 };
 
+const getVitalsDocker = (videoPath) => {
+  return new Promise((resolve, reject) => {
+    const args = [
+      'run', '--rm',
+      '-v', `${videoPath}:/tmp/input.mp4:ro`,
+      DOCKER_IMAGE,
+      PRESAGE_API_KEY, '/tmp/input.mp4'
+    ];
+    execFile('docker', args, { timeout: 120000 }, (error, stdout, stderr) => {
+      if (stderr) console.log('Presage stderr:', stderr);
+      if (error) return reject(new Error(`Presage Docker failed: ${error.message}\nstderr: ${stderr}`));
+      try {
+        resolve(JSON.parse(stdout.trim()));
+      } catch (parseErr) {
+        reject(new Error(`Failed to parse Presage output: ${stdout}`));
+      }
+    });
+  });
+};
+
+const useDocker = !fs.existsSync(PRESAGE_BINARY);
+
 module.exports = (app) => {
   app.post('/api/vitals', async (req, res) => {
     const { videoUrl } = req.body;
     if (!videoUrl) return res.status(400).json({ error: 'videoUrl required' });
 
-    if (!fs.existsSync(PRESAGE_BINARY)) {
-      return res.json({ source: 'presage_smartspectra', data: null, warning: 'Presage binary not built' });
-    }
-
+    let tmpFile;
     try {
-      const vitals = await getVitals(videoUrl);
+      tmpFile = await downloadVideo(videoUrl);
+      const vitals = useDocker
+        ? await getVitalsDocker(tmpFile)
+        : await getVitalsNative(tmpFile);
       res.json({ source: 'presage_smartspectra', data: vitals });
     } catch (err) {
       console.error('Presage error:', err.message);
       res.status(500).json({ error: 'Vitals analysis failed', details: err.message });
+    } finally {
+      if (tmpFile) fs.unlink(tmpFile, () => {});
     }
   });
 };

@@ -56,12 +56,12 @@ export default function Analysis() {
         if (presage?.data) {
           const pd = presage.data;
           if (pd.pulse_rate != null) {
-            triage.vitals.heart_rate.estimate = pd.pulse_rate;
+            triage.vitals.heart_rate.estimate = Math.round(pd.pulse_rate);
             triage.vitals.heart_rate.source = 'Presage SmartSpectra';
             triage.vitals.heart_rate.confidence = 'high';
           }
           if (pd.breathing_rate != null) {
-            triage.vitals.breathing_rate.estimate = pd.breathing_rate;
+            triage.vitals.breathing_rate.estimate = Math.round(pd.breathing_rate);
             triage.vitals.breathing_rate.source = 'Presage SmartSpectra';
             triage.vitals.breathing_rate.confidence = 'high';
           }

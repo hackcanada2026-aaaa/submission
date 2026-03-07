@@ -82,7 +82,7 @@ export default function Capture() {
           )}
         </motion.button>
         <p className="text-sm text-[var(--text-secondary)]">
-          {recording ? 'Recording... tap to stop' : 'Tap to record (5s max)'}
+          {recording ? 'Recording... tap to stop' : 'Tap to record (5s)'}
         </p>
         <div className="w-full border-t border-[var(--border)] pt-4 mt-2">
           <button
