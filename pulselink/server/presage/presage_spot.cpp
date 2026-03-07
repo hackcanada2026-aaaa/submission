@@ -135,7 +135,7 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    // Average the readings
+    // Include all readings that have values; use confidence only for output metadata
     float pulse_sum = 0, breathing_sum = 0;
     int pulse_count = 0, breathing_count = 0;
     float last_pulse = 0, last_breathing = 0;
@@ -167,6 +167,8 @@ int main(int argc, char** argv) {
         output["breathing_rate_confidence"] = last_breathing_conf;
     }
     output["readings_count"] = readings.size();
+    output["pulse_rate_available"] = (pulse_count > 0);
+    output["breathing_rate_available"] = (breathing_count > 0);
 
     std::cout << output.dump() << std::endl;
     return 0;

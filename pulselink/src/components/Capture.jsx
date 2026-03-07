@@ -148,27 +148,43 @@ export default function Capture() {
             )}
           </div>
 
-          <div className="p-6 flex flex-col items-center gap-4">
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              onClick={recording ? stopRecording : startRecording}
-              disabled={!stream}
-              className={`w-16 h-16 rounded-full border-4 border-white flex items-center justify-center cursor-pointer ${
-                recording ? 'bg-red-600' : 'bg-red-500'
-              } disabled:opacity-40`}
-            >
-              {recording ? (
-                <div className="w-6 h-6 bg-white rounded-sm" />
-              ) : (
-                <Camera className="w-6 h-6 text-white" />
-              )}
-            </motion.button>
-            <p className="text-sm text-[var(--text-secondary)]">
-              {recording ? 'Recording... tap to stop' : 'Tap to record (8s)'}
-            </p>
-          </div>
-        </>
-      )}
+      <div className="p-6 flex flex-col items-center gap-4">
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          onClick={recording ? stopRecording : startRecording}
+          disabled={!stream}
+          className={`w-16 h-16 rounded-full border-4 border-white flex items-center justify-center cursor-pointer ${
+            recording ? 'bg-red-600' : 'bg-red-500'
+          } disabled:opacity-40`}
+        >
+          {recording ? (
+            <div className="w-6 h-6 bg-white rounded-sm" />
+          ) : (
+            <Camera className="w-6 h-6 text-white" />
+          )}
+        </motion.button>
+        <p className="text-sm text-[var(--text-secondary)]">
+          {recording ? 'Recording... tap to stop' : 'Tap to record (8s for vitals)'}
+        </p>
+        <p className="text-xs text-[var(--text-secondary)] opacity-80 max-w-[260px] text-center">
+          Keep the person&apos;s face clearly in frame for heart & breathing rate.
+        </p>
+        <div className="w-full border-t border-[var(--border)] pt-4 mt-2">
+          <button
+            onClick={() => fileRef.current?.click()}
+            className="w-full py-3 px-4 border border-[var(--border)] rounded-xl text-[var(--text-secondary)] flex items-center justify-center gap-2 cursor-pointer hover:border-[var(--text-secondary)] transition-colors"
+          >
+            <Upload className="w-4 h-4" /> Upload video file
+          </button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".mp4,.webm,.mov"
+            className="hidden"
+            onChange={(e) => e.target.files[0] && handleFileUpload(e.target.files[0])}
+          />
+        </div>
+      </div>
     </div>
   );
 }
