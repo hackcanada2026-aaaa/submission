@@ -17,6 +17,7 @@ function presageVideoUrl(url) {
   }
   return url;
 }
+const MAX_VIDEO_SECONDS = 8;
 
 const downloadVideo = (url) => {
   return new Promise((resolve, reject) => {
@@ -32,6 +33,25 @@ const downloadVideo = (url) => {
       res.pipe(file);
       file.on('finish', () => { file.close(); resolve(tmpFile); });
     }).on('error', (err) => { fs.unlink(tmpFile, () => {}); reject(err); });
+  });
+};
+
+const trimVideo = (inputPath) => {
+  return new Promise((resolve, reject) => {
+    const trimmed = inputPath.replace(/\.mp4$/, '_trim.mp4');
+    execFile('ffmpeg', [
+      '-y', '-i', inputPath,
+      '-t', String(MAX_VIDEO_SECONDS),
+      '-c', 'copy',
+      trimmed
+    ], { timeout: 15000 }, (error) => {
+      if (error) {
+        // ffmpeg not available or failed — just use original
+        console.log('ffmpeg trim skipped:', error.message);
+        return resolve(inputPath);
+      }
+      resolve(trimmed);
+    });
   });
 };
 
@@ -76,12 +96,14 @@ module.exports = (app) => {
     if (!videoUrl) return res.status(400).json({ error: 'videoUrl required' });
 
     let tmpFile;
+    let trimmedFile;
     try {
       const downloadUrl = presageVideoUrl(videoUrl);
       tmpFile = await downloadVideo(downloadUrl);
+      trimmedFile = await trimVideo(tmpFile);
       const vitals = useDocker
-        ? await getVitalsDocker(tmpFile)
-        : await getVitalsNative(tmpFile);
+        ? await getVitalsDocker(trimmedFile)
+        : await getVitalsNative(trimmedFile);
       if (vitals && !vitals.error) {
         console.log('Presage vitals:', {
           readings_count: vitals.readings_count,
@@ -95,6 +117,7 @@ module.exports = (app) => {
       res.status(500).json({ error: 'Vitals analysis failed', details: err.message });
     } finally {
       if (tmpFile) fs.unlink(tmpFile, () => {});
+      if (trimmedFile && trimmedFile !== tmpFile) fs.unlink(trimmedFile, () => {});
     }
   });
 };

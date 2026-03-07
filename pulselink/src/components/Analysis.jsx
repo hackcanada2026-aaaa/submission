@@ -8,8 +8,7 @@ import { analyzeScene } from '../services/gemini';
 import { fetchPresageVitals } from '../services/presage';
 
 const PHASES = [
-  'Uploading to cloud...',
-  'Extracting video frames...',
+  'Processing video...',
   'Analyzing scene with AI...',
   'Reading biometric vitals...',
   'Finalizing assessment...',
@@ -31,20 +30,25 @@ export default function Analysis() {
 
     (async () => {
       try {
-        // Phase 0: Upload to Cloudinary
+        // Phase 0: Extract frames from local blob + upload to Cloudinary in parallel
         setPhase(0);
-        const cloudData = await uploadToCloudinary(videoBlob);
+        const localUrl = URL.createObjectURL(videoBlob);
+        const [frames, cloudData] = await Promise.all([
+          extractFrames(localUrl),
+          uploadToCloudinary(videoBlob),
+        ]);
+        URL.revokeObjectURL(localUrl);
         setCloudinaryData(cloudData);
 
-        // Phase 1: Extract frames
+        // Phase 1 & 2: Gemini + Presage in parallel
         setPhase(1);
-        const frames = await extractFrames(cloudData.secure_url);
-
-        // Phase 2 & 3: Gemini + Presage in parallel
-        setPhase(2);
+        const presageWithTimeout = Promise.race([
+          fetchPresageVitals(cloudData.secure_url).then(r => { setPhase(2); return r; }),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Presage timed out')), 90000)),
+        ]);
         const [geminiResult, presageResult] = await Promise.allSettled([
           analyzeScene(frames),
-          fetchPresageVitals(cloudData.secure_url).then(r => { setPhase(3); return r; }),
+          presageWithTimeout,
         ]);
 
         const triage = geminiResult.status === 'fulfilled' ? geminiResult.value : null;
@@ -92,7 +96,7 @@ export default function Analysis() {
         setTriageData(triage);
         setPresageData(presage);
 
-        setPhase(4);
+        setPhase(3);
         setTimeout(() => navigate('/dashboard'), 600);
       } catch (err) {
         setError(err.message);
