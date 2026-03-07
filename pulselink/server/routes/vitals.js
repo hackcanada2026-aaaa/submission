@@ -9,6 +9,15 @@ const PRESAGE_BINARY = path.join(__dirname, '..', 'presage', 'build', 'presage_s
 const PRESAGE_API_KEY = process.env.PRESAGE_API_KEY;
 const DOCKER_IMAGE = 'pulselink-presage';
 
+/** Request MP4 from Cloudinary so Presage gets a format it can decode (browser records WebM). */
+function presageVideoUrl(url) {
+  if (!url || typeof url !== 'string') return url;
+  if (url.includes('cloudinary.com') && url.includes('/video/upload/')) {
+    return url.replace('/video/upload/', '/video/upload/f_mp4/');
+  }
+  return url;
+}
+
 const downloadVideo = (url) => {
   return new Promise((resolve, reject) => {
     const tmpFile = path.join(os.tmpdir(), `presage_${Date.now()}.mp4`);
@@ -68,10 +77,18 @@ module.exports = (app) => {
 
     let tmpFile;
     try {
-      tmpFile = await downloadVideo(videoUrl);
+      const downloadUrl = presageVideoUrl(videoUrl);
+      tmpFile = await downloadVideo(downloadUrl);
       const vitals = useDocker
         ? await getVitalsDocker(tmpFile)
         : await getVitalsNative(tmpFile);
+      if (vitals && !vitals.error) {
+        console.log('Presage vitals:', {
+          readings_count: vitals.readings_count,
+          pulse_rate: vitals.pulse_rate ?? '(none)',
+          breathing_rate: vitals.breathing_rate ?? '(none)',
+        });
+      }
       res.json({ source: 'presage_smartspectra', data: vitals });
     } catch (err) {
       console.error('Presage error:', err.message);
