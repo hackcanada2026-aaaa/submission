@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #0A0F1C;
+  --bg-card: #1A2235;
+  --text-primary: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --accent-red: #EF4444;
+  --accent-amber: #F59E0B;
+  --accent-green: #10B981;
+  --accent-blue: #3B82F6;
+  --accent-teal: #14B8A6;
+  --border: #1E293B;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-mono {
+  font-family: "IBM Plex Mono", monospace;
+}
+
+@keyframes pulse-vital {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+.animate-pulse-vital {
+  animation: pulse-vital 1s ease-in-out infinite;
+}
+
+@keyframes listening-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  50% { box-shadow: 0 0 0 16px rgba(239, 68, 68, 0); }
+}
+
+.animate-listening {
+  animation: listening-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes typing-dot {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-4px); }
+}
+
+.typing-dot:nth-child(1) { animation: typing-dot 1.2s infinite 0s; }
+.typing-dot:nth-child(2) { animation: typing-dot 1.2s infinite 0.2s; }
+.typing-dot:nth-child(3) { animation: typing-dot 1.2s infinite 0.4s; }
+
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
