@@ -4,6 +4,8 @@ const TRIAGE_PROMPT = `You are a medical triage AI analyzing sequential video fr
 
 Be specific where visual evidence allows. Say "Unable to assess" when you cannot determine something. Err on the side of caution for severity.
 
+severity_score must be an integer 1-10. Base it ONLY on: consciousness, injuries_detected, bleeding, body_position, and visual scene — do NOT use heart_rate or breathing_rate. Still report heart_rate and breathing_rate in vitals for display.
+
 Return ONLY valid JSON — no markdown, no backticks, no preamble:
 
 {
