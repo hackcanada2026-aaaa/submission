@@ -5,7 +5,6 @@ const CATEGORY_STYLES = {
   'Immediate (Red)': 'bg-red-600 text-white',
   'Urgent (Yellow)': 'bg-amber-500 text-black',
   'Delayed (Green)': 'bg-emerald-600 text-white',
-  'Expectant (Black)': 'bg-gray-900 text-white border border-gray-700',
 };
 
 export default function SeverityBanner({ diagnosis, firstAid, summary }) {

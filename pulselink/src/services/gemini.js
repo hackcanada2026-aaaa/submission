@@ -46,8 +46,7 @@ Return ONLY valid JSON — no markdown, no backticks, no preamble:
   "diagnosis": {
     "primary_assessment": "<1-2 sentence interpretation>",
     "risk_flags": ["<possible shock>", "<airway compromise>"],
-    "severity_score": 5,
-    "triage_category": "Immediate (Red)|Urgent (Yellow)|Delayed (Green)|Expectant (Black)"
+    "severity_score": 5
   },
   "first_aid": {
     "immediate_actions": ["<step 1>", "<step 2>", "<up to 6 steps>"],
@@ -67,6 +66,12 @@ const fetchWithRetry = async (url, options, retries = 3) => {
     }
     return response;
   }
+};
+
+const getTriageCategory = (score) => {
+  if (score >= 8) return 'Immediate (Red)';
+  if (score >= 5) return 'Urgent (Yellow)';
+  return 'Delayed (Green)';
 };
 
 export const analyzeScene = async (base64Frames) => {
@@ -93,7 +98,9 @@ export const analyzeScene = async (base64Frames) => {
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
   const match = text.match(/\{[\s\S]*\}/);
   if (!match) throw new Error('No JSON in Gemini response');
-  return JSON.parse(match[0]);
+  const result = JSON.parse(match[0]);
+  result.diagnosis.triage_category = getTriageCategory(result.diagnosis.severity_score);
+  return result;
 };
 
 export const buildInitialHistory = (triageData) => [
