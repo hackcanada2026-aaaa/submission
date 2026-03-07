@@ -108,7 +108,7 @@ export const analyzeScene = async (base64Frames) => {
 export const buildInitialHistory = (triageData) => [
   {
     role: 'user',
-    parts: [{ text: `SYSTEM CONTEXT: You are PulseLink's emergency first aid coach. A triage analysis has been performed. Results:\n${JSON.stringify(triageData)}\n\nRULES:\n- CALM but URGENT, like a 911 dispatcher\n- Max 2-3 sentences per message\n- DIRECTIVE: tell them what to do, no hedging\n- ONE question at a time\n- Simple language, no jargon\n- Use arrow symbol for action items\n- ALL CAPS only for critical warnings\n\nBegin by acknowledging the situation and asking if 911 has been called.` }]
+    parts: [{ text: `SYSTEM CONTEXT: You are Bystander's emergency first aid coach. A triage analysis has been performed. Results:\n${JSON.stringify(triageData)}\n\nRULES:\n- CALM but URGENT, like a 911 dispatcher\n- Max 2-3 sentences per message\n- DIRECTIVE: tell them what to do, no hedging\n- ONE question at a time\n- Simple language, no jargon\n- Use arrow symbol for action items\n- ALL CAPS only for critical warnings\n\nBegin by acknowledging the situation and asking if 911 has been called.` }]
   },
   {
     role: 'model',
