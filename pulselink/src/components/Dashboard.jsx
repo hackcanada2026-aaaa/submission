@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MessageCircle, Volume2, FileText, Play } from 'lucide-react';
+import { MessageCircle, Volume2, FileText, Play, X } from 'lucide-react';
 import { AdvancedVideo } from '@cloudinary/react';
 import { useTriage } from '../context/TriageContext';
 import { getVideo } from '../services/cloudinary';
@@ -20,7 +20,43 @@ export default function Dashboard() {
   const [chatOpen, setChatOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [videoOpen, setVideoOpen] = useState(true);
+  const [helpNotificationDismissed, setHelpNotificationDismissed] = useState(false);
+  const [helpNotificationProgress, setHelpNotificationProgress] = useState(100);
+  const helpNotificationTimerRef = useRef(null);
   const { messages: chatMessages, history: chatHistory, send: chatSend, initialize: chatInit } = useChat(triageData);
+
+  const severityScore = triageData?.diagnosis?.severity_score ?? 0;
+  const showHelpNotification = severityScore >= 8 && !helpNotificationDismissed;
+
+  useEffect(() => {
+    if (!showHelpNotification) return;
+    const durationMs = 8000;
+    const intervalMs = 50;
+    const step = (intervalMs / durationMs) * 100;
+    setHelpNotificationProgress(100);
+    helpNotificationTimerRef.current = setInterval(() => {
+      setHelpNotificationProgress((p) => {
+        const next = Math.max(0, p - step);
+        if (next <= 0 && helpNotificationTimerRef.current) {
+          clearInterval(helpNotificationTimerRef.current);
+          helpNotificationTimerRef.current = null;
+          setHelpNotificationDismissed(true);
+        }
+        return next;
+      });
+    }, intervalMs);
+    return () => {
+      if (helpNotificationTimerRef.current) clearInterval(helpNotificationTimerRef.current);
+    };
+  }, [showHelpNotification]);
+
+  const dismissHelpNotification = () => {
+    if (helpNotificationTimerRef.current) {
+      clearInterval(helpNotificationTimerRef.current);
+      helpNotificationTimerRef.current = null;
+    }
+    setHelpNotificationDismissed(true);
+  };
 
   if (!triageData) {
     navigate('/');
@@ -36,6 +72,31 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen pb-28">
+      {showHelpNotification && (
+        <div className="fixed top-0 left-0 right-0 z-50 px-4 pt-4 safe-area-inset-top">
+          <div className="max-w-2xl mx-auto bg-amber-500/55 backdrop-blur border border-amber-400/75 text-black rounded-xl shadow-lg overflow-hidden">
+            <div className="flex items-start gap-3 p-4">
+              <p className="flex-1 text-base font-medium pr-8">
+                ⚠️ Help is on the way. A nearby first-aid responder has been notified.
+              </p>
+              <button
+                onClick={dismissHelpNotification}
+                className="shrink-0 p-1 rounded-lg hover:bg-amber-400/50 transition-colors"
+                aria-label="Close notification"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="h-1 bg-amber-400/50">
+              <div
+                className="h-full bg-amber-600 transition-all duration-75 ease-linear"
+                style={{ width: `${helpNotificationProgress}%` }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-2xl mx-auto p-4 space-y-4">
         <SeverityBanner
           diagnosis={t.diagnosis}
