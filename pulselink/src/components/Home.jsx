@@ -1,12 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Heart, Shield, Mic, FileText } from 'lucide-react';
+import { Shield, Mic, FileText, Handshake } from 'lucide-react';
+import logo from '../assets/logo.png';
 
 export default function Home() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-gradient-to-br from-red-950/40 via-[var(--bg-primary)] to-emerald-950/40">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -14,14 +15,14 @@ export default function Home() {
       >
         <div className="mb-8">
           <motion.div
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="w-20 h-20 mx-auto mb-6 rounded-full bg-red-600/20 flex items-center justify-center"
+            animate={{ scale: [1, 1.08, 1] }}
+            transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+            className="w-30 h-30 mx-auto mb-6 rounded-full bg-red-600/20 flex items-center justify-center overflow-visible"
           >
-            <Heart className="w-10 h-10 text-red-500" />
+            <img src={logo} alt="Bystander" className="w-28 h-28 object-contain" />
           </motion.div>
           <h1 className="text-4xl font-bold mb-2 tracking-tight">bystander</h1>
-          <p className="text-[var(--text-secondary)] text-lg">AI-powered triage in seconds</p>
+          <p className="text-[var(--text-secondary)] text-lg">AI emergency handoff in seconds 🚀</p>
         </div>
 
         <motion.button
@@ -32,7 +33,7 @@ export default function Home() {
           Start Emergency Analysis
         </motion.button>
 
-        <div className="mt-12 grid grid-cols-3 gap-4 text-center text-sm text-[var(--text-secondary)]">
+        <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center text-sm text-[var(--text-secondary)]">
           <div className="flex flex-col items-center gap-2">
             <Shield className="w-5 h-5 text-[var(--accent-teal)]" />
             <span>Scene Analysis</span>
@@ -44,6 +45,10 @@ export default function Home() {
           <div className="flex flex-col items-center gap-2">
             <FileText className="w-5 h-5 text-[var(--accent-amber)]" />
             <span>ER Report</span>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <Handshake className="w-5 h-5 text-[var(--accent-teal)]" />
+            <span>Professional Handoff</span>
           </div>
         </div>
       </motion.div>
