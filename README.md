@@ -1,6 +1,6 @@
 # bystander
 
-**AI-powered emergency triage in seconds.** Point your phone at an emergency scene and get instant severity assessment, step-by-step first aid guidance, and automated alerts to nearby first aiders.
+**AI emergency handoff in seconds** Point your phone at an emergency scene and get instant severity assessment, step-by-step first aid guidance, and automated alerts to nearby first aiders.
 
 Built at **Hack Canada 2026** to tackle a real Canadian challenge: improving emergency response times in areas where professional help may be minutes away.
 
