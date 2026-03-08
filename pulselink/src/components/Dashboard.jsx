@@ -51,7 +51,7 @@ export default function Dashboard() {
           <div>
             <button
               onClick={() => setVideoOpen(!videoOpen)}
-              className="flex items-center gap-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer transition-colors"
+              className="flex items-center gap-2 px-4 py-3 bg-[var(--bg-card)] border border-[var(--border)] rounded-xl text-sm font-medium cursor-pointer transition-colors"
             >
               <Play className="w-4 h-4" /> {videoOpen ? 'Hide' : 'Replay'} Video
             </button>

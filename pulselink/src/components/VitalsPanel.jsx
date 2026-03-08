@@ -46,7 +46,7 @@ export default function VitalsPanel({ vitals }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
       <VitalCard
-        label="Heart Rate"
+        label="Heart Rate ❤️"
         value={hr?.estimate ?? '—'}
         status={hr?.status}
         source={hr?.source || 'AI Estimated'}
@@ -54,17 +54,17 @@ export default function VitalsPanel({ vitals }) {
         animate={hr?.status !== 'unknown'}
       />
       <VitalCard
-        label="Breathing Rate"
+        label="Breathing Rate🫁"
         value={br?.estimate ?? '—'}
         status={br?.status}
         source={br?.source || 'AI Estimated'}
         confidence={br?.confidence}
       />
       <VitalCard
-        label="Consciousness"
+        label="Consciousness🧠"
         value={con?.level || '—'}
         status={con?.level === 'Alert' ? 'normal' : con?.level === 'Unresponsive' ? 'critical' : 'elevated'}
-        source="AI Estimated"
+        source="Gemini Estimated"
         confidence={con?.confidence}
       />
     </div>

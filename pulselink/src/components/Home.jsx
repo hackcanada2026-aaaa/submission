@@ -20,7 +20,7 @@ export default function Home() {
           >
             <Heart className="w-10 h-10 text-red-500" />
           </motion.div>
-          <h1 className="text-4xl font-bold mb-2 tracking-tight">Bystander</h1>
+          <h1 className="text-4xl font-bold mb-2 tracking-tight">bystander</h1>
           <p className="text-[var(--text-secondary)] text-lg">AI-powered triage in seconds</p>
         </div>
 
