@@ -74,8 +74,8 @@ export function useVideoCapture() {
   }, []);
 
   const handleFileUpload = useCallback((file) => {
-    if (file.size > 50 * 1024 * 1024) {
-      setError('File too large. Maximum 50MB.');
+    if (file.size > 100 * 1024 * 1024) {
+      setError('File too large. Maximum 100MB.');
       return;
     }
     setVideoBlob(file);
