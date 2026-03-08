@@ -101,7 +101,7 @@ export default function Capture() {
               </p>
             </div>
             <p className="text-xs text-[var(--text-secondary)]">
-              MP4, WebM, MOV — max 50MB
+              MP4, WebM, MOV — max 100MB
             </p>
           </div>
           <input

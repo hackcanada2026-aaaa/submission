@@ -7,6 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 require('./routes/vitals')(app);
+require('./routes/notify')(app);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Bystander backend on http://localhost:${PORT}`));

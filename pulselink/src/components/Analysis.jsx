@@ -6,6 +6,7 @@ import { uploadToCloudinary } from '../services/cloudinary';
 import { extractFrames } from '../services/frameExtractor';
 import { analyzeScene } from '../services/gemini';
 import { fetchPresageVitals } from '../services/presage';
+import { notifyFirstAiders } from '../services/notify';
 
 const PHASES = [
   'Processing video...',
@@ -95,6 +96,13 @@ export default function Analysis() {
 
         setTriageData(triage);
         setPresageData(presage);
+
+        // Notify first aiders if critical (score 8-10)
+        if (triage.diagnosis?.severity_score >= 8) {
+          notifyFirstAiders(triage).then(result => {
+            if (result.sent) console.log('First aider notified via SMS');
+          });
+        }
 
         setPhase(3);
         setTimeout(() => navigate('/dashboard'), 600);
