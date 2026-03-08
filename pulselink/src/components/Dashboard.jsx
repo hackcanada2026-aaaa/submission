@@ -6,7 +6,7 @@ import { useTriage } from '../context/TriageContext';
 import { getVideo } from '../services/cloudinary';
 import { speakSequential } from '../services/elevenlabs';
 import SeverityBanner from './SeverityBanner';
-import VitalsPanel from './VitalsPanel';
+import { VitalsOverlay } from './VitalsPanel';
 import InjuryPanel from './InjuryPanel';
 import RiskFlags from './RiskFlags';
 import FirstAidSteps from './FirstAidSteps';
@@ -19,7 +19,7 @@ export default function Dashboard() {
   const { triageData, cloudinaryData } = useTriage();
   const [chatOpen, setChatOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
-  const [videoOpen, setVideoOpen] = useState(false);
+  const [videoOpen, setVideoOpen] = useState(true);
   const { messages: chatMessages, history: chatHistory, send: chatSend, initialize: chatInit } = useChat(triageData);
 
   if (!triageData) {
@@ -43,10 +43,6 @@ export default function Dashboard() {
           summary={t.summary}
         />
 
-        <VitalsPanel vitals={t.vitals} />
-
-        <InjuryPanel visualAnalysis={t.visual_analysis} />
-
         {cloudinaryData?.public_id && (
           <div>
             <button
@@ -56,16 +52,25 @@ export default function Dashboard() {
               <Play className="w-4 h-4" /> {videoOpen ? 'Hide' : 'Replay'} Video
             </button>
             {videoOpen && (
-              <div className="mt-2 rounded-xl overflow-hidden">
+              <div className="relative mt-2 rounded-xl overflow-hidden">
                 <AdvancedVideo
                   cldVid={getVideo(cloudinaryData.public_id)}
                   controls
+                  autoPlay
+                  playsInline
                   className="w-full"
                 />
+                <div className="absolute top-0 left-0 right-0 pt-2 px-2 pointer-events-none">
+                  <div className="pointer-events-auto w-full">
+                    <VitalsOverlay vitals={t.vitals} />
+                  </div>
+                </div>
               </div>
             )}
           </div>
         )}
+
+        <InjuryPanel visualAnalysis={t.visual_analysis} />
 
         <RiskFlags flags={t.diagnosis?.risk_flags} />
 
