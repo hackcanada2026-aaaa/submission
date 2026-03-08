@@ -10,4 +10,4 @@ require('./routes/vitals')(app);
 require('./routes/notify')(app);
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`PulseLink backend on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Bystander backend on http://localhost:${PORT}`));
