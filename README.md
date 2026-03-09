@@ -4,7 +4,7 @@
 
 Built at **Hack Canada 2026** to tackle a real Canadian challenge: improving emergency response times in areas where professional help may be minutes away.
 
-## What It Does
+## What It Does:
 
 1. **Capture** — Record a live video or upload one showing the emergency scene
 2. **AI Triage** — Gemini 2.5 Flash analyzes the scene to assess injuries, consciousness, bleeding, and body position, producing a severity score from 1-10
