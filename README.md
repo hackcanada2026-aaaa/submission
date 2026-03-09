@@ -27,7 +27,7 @@ Camera/Upload → Frame Extraction → Gemini Vision Analysis
                                            → Incident Report
 ```
 
-## Tech Stack
+## Tech Stack:
 
 - **Frontend:** React 19, Vite, Tailwind CSS 4, Framer Motion
 - **Backend:** Node.js, Express
